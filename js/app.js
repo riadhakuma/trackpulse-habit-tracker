@@ -1,6 +1,6 @@
 /**
  * TrackPulse V2 Main Application Logic
- * Featuring Interactive Agenda Calendar Picker, High-Z-Index Dropdowns, 3D Icon Cubes
+ * Featuring PC & Mobile Universal Agenda Picker, High-Z-Index Dropdowns, 3D Icon Cubes
  */
 
 class TrackPulseApp {
@@ -98,14 +98,32 @@ class TrackPulseApp {
     document.getElementById('next-week-btn').addEventListener('click', () => this.changeWeek(7));
     document.getElementById('today-week-btn').addEventListener('click', () => this.goToTodayWeek());
 
-    // Interactive Agenda Calendar Date Selector
+    // PC & Mobile Universal Agenda Calendar Date Selector
+    const agendaWrapper = document.querySelector('.agenda-picker-wrapper');
     const agendaPicker = document.getElementById('agenda-date-picker');
+
     if (agendaPicker) {
       agendaPicker.addEventListener('change', (e) => {
         const val = e.target.value;
         if (val) {
           const pickedDate = new Date(val + 'T00:00:00');
           this.selectDateInAgenda(pickedDate);
+        }
+      });
+    }
+
+    if (agendaWrapper && agendaPicker) {
+      agendaWrapper.addEventListener('click', (e) => {
+        if (e.target !== agendaPicker) {
+          if (typeof agendaPicker.showPicker === 'function') {
+            try {
+              agendaPicker.showPicker();
+            } catch (err) {
+              agendaPicker.click();
+            }
+          } else {
+            agendaPicker.click();
+          }
         }
       });
     }

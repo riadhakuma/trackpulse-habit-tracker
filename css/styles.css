@@ -1,4 +1,4 @@
-/* TrackPulse V2 - Master Stylesheet (360° Border Glow & Mobile Badge Layout Fix) */
+/* TrackPulse V2 - Master Stylesheet (PC & iOS Agenda Picker Fix) */
 
 :root {
   --bg-dark: #07090e;
@@ -246,11 +246,12 @@ body.dark-theme.v2-theme {
   cursor: pointer;
   transition: background-color var(--transition-fast), border-color var(--transition-fast);
   border: 1px solid transparent;
+  user-select: none;
 }
 
 .agenda-picker-wrapper:hover {
-  background: rgba(6, 182, 212, 0.12);
-  border-color: rgba(6, 182, 212, 0.3);
+  background: rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.4);
 }
 
 .agenda-hidden-date-input {
@@ -261,6 +262,7 @@ body.dark-theme.v2-theme {
   height: 100%;
   opacity: 0;
   cursor: pointer;
+  z-index: 10;
 }
 
 .header-actions {
@@ -414,7 +416,7 @@ body.dark-theme.v2-theme {
   box-shadow: 0 12px 30px -10px rgba(6, 182, 212, 0.25);
 }
 
-/* FIXED TRUE 360-DEGREE ANIMATED BORDER GLOW */
+/* 360-DEGREE ANIMATED BORDER GLOW */
 .animmaster-glow-card {
   position: relative;
   border-color: rgba(6, 182, 212, 0.4) !important;
@@ -474,7 +476,6 @@ body.dark-theme.v2-theme {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-/* FIXED LIVE MATRIX BADGE ON MOBILE */
 .section-title h2 {
   font-size: 1.2rem;
   font-weight: 700;
