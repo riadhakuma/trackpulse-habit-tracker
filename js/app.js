@@ -1,5 +1,5 @@
 /**
- * TrackPulse Main Application Logic - Multi-User & Admin RIADH Edition
+ * TrackPulse Main Application Logic - Multi-User & Secure Auth Edition
  */
 
 class TrackPulseApp {
@@ -19,15 +19,7 @@ class TrackPulseApp {
   init() {
     StorageManager.initUserSession();
 
-    // Default admin login automatically if no session
-    if (!StorageManager.currentUser) {
-      StorageManager.setCurrentUser({
-        id: 'usr_admin_1',
-        username: 'RIADH',
-        role: 'admin'
-      });
-    }
-
+    // Ensure no automatic admin login on initial site load
     const habits = StorageManager.getHabits();
     if (!habits || habits.length === 0) {
       StorageManager.seedDemoData(this.currentMonday);
@@ -42,7 +34,7 @@ class TrackPulseApp {
     document.getElementById('next-week-btn').addEventListener('click', () => this.changeWeek(7));
     document.getElementById('today-week-btn').addEventListener('click', () => this.goToTodayWeek());
 
-    // Tab Navigation
+    // Desktop & Mobile Tab Navigation
     document.querySelectorAll('.tab-btn, .mobile-bottom-nav .nav-item[data-tab]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const targetTab = e.currentTarget.getAttribute('data-tab');
@@ -57,7 +49,7 @@ class TrackPulseApp {
     const mobileAddBtn = document.getElementById('mobile-add-activity-btn');
     if (mobileAddBtn) mobileAddBtn.addEventListener('click', () => this.openHabitModal());
 
-    // Auth & User Modal Events
+    // Auth Events
     document.getElementById('user-auth-btn').addEventListener('click', () => this.openAuthModal());
     document.getElementById('close-auth-modal').addEventListener('click', () => this.closeAuthModal());
     document.getElementById('toggle-auth-mode-btn').addEventListener('click', () => this.toggleAuthMode());
@@ -67,7 +59,7 @@ class TrackPulseApp {
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
         StorageManager.logout();
-        this.showToast('Signed out.', 'info');
+        this.showToast('Signed out successfully.', 'info');
         this.render();
       });
     }
@@ -78,7 +70,7 @@ class TrackPulseApp {
       refreshAdminBtn.addEventListener('click', () => this.renderAdminPanel());
     }
 
-    // Activity & Log Modals
+    // Modals
     document.getElementById('open-add-habit-modal-btn').addEventListener('click', () => this.openHabitModal());
     document.getElementById('matrix-add-btn').addEventListener('click', () => this.openHabitModal());
     document.getElementById('close-habit-modal').addEventListener('click', () => this.closeHabitModal());
@@ -186,7 +178,7 @@ class TrackPulseApp {
     }
   }
 
-  // Auth & Multi-User Handlers
+  // Auth Handlers
   openAuthModal() {
     document.getElementById('auth-modal').classList.remove('hidden');
   }
@@ -252,12 +244,23 @@ class TrackPulseApp {
       badgeLabel.textContent = 'Login';
       if (logoutBtn) logoutBtn.classList.add('hidden');
       adminTabs.forEach(el => el.classList.add('hidden'));
+
+      // If viewing admin tab while logged out, switch to main tab
+      if (this.activeTab === 'admin-view') {
+        this.switchTab('weekly-view');
+      }
     }
   }
 
   async renderAdminPanel() {
     const tbody = document.getElementById('admin-users-tbody');
     if (!tbody) return;
+
+    const user = StorageManager.currentUser;
+    if (!user || (user.role !== 'admin' && user.username.toUpperCase() !== 'RIADH')) {
+      tbody.innerHTML = '<tr><td colspan="5">Access denied. Please log in as Admin RIADH.</td></tr>';
+      return;
+    }
 
     tbody.innerHTML = '<tr><td colspan="5">Loading registered members...</td></tr>';
     const overview = await StorageManager.fetchAdminOverview();
