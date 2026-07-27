@@ -1,6 +1,6 @@
 /**
  * TrackPulse V2 Main Application Logic
- * Powered by AnimMasterLib Particles, Skiper UI Navigation, & Vengeance 3D Tilt
+ * Featuring Interactive Agenda Calendar Picker, High-Z-Index Dropdowns, 3D Icon Cubes
  */
 
 class TrackPulseApp {
@@ -98,6 +98,18 @@ class TrackPulseApp {
     document.getElementById('next-week-btn').addEventListener('click', () => this.changeWeek(7));
     document.getElementById('today-week-btn').addEventListener('click', () => this.goToTodayWeek());
 
+    // Interactive Agenda Calendar Date Selector
+    const agendaPicker = document.getElementById('agenda-date-picker');
+    if (agendaPicker) {
+      agendaPicker.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (val) {
+          const pickedDate = new Date(val + 'T00:00:00');
+          this.selectDateInAgenda(pickedDate);
+        }
+      });
+    }
+
     // Skiper & Mobile Tab Navigation Sync
     document.querySelectorAll('.skiper-nav-pill, .mobile-bottom-nav .nav-item[data-tab]').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -148,16 +160,21 @@ class TrackPulseApp {
 
     document.getElementById('log-habit-select').addEventListener('change', (e) => this.updateLogValueInputLabel(e.target.value));
 
+    // Three dots settings dropdown menu
     const menuBtn = document.getElementById('settings-menu-btn');
     const dropdown = document.getElementById('settings-dropdown');
-    if (menuBtn) {
+    if (menuBtn && dropdown) {
       menuBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         dropdown.classList.toggle('hidden');
       });
     }
 
-    document.addEventListener('click', () => dropdown && dropdown.classList.add('hidden'));
+    document.addEventListener('click', (e) => {
+      if (dropdown && !dropdown.contains(e.target) && e.target !== menuBtn) {
+        dropdown.classList.add('hidden');
+      }
+    });
 
     document.getElementById('load-demo-btn').addEventListener('click', () => {
       StorageManager.seedDemoData(this.currentMonday);
@@ -204,6 +221,17 @@ class TrackPulseApp {
     }
 
     document.getElementById('save-reflection-btn').addEventListener('click', () => this.saveReflection());
+  }
+
+  selectDateInAgenda(dateObj) {
+    const day = (dateObj.getDay() + 6) % 7;
+    const targetMonday = new Date(dateObj);
+    targetMonday.setDate(dateObj.getDate() - day);
+    targetMonday.setHours(0, 0, 0, 0);
+
+    this.currentMonday = targetMonday;
+    this.showToast(`Switched Agenda view to week of ${StorageManager.formatDateISO(dateObj)}`, 'info');
+    this.render();
   }
 
   changeWeek(daysOffset) {
@@ -352,6 +380,11 @@ class TrackPulseApp {
       const startStr = `${weekDetails.monday.getDate()} ${StorageManager.formatDayHeader(weekDetails.monday).monthName}`;
       const endStr = `${weekDetails.sunday.getDate()} ${StorageManager.formatDayHeader(weekDetails.sunday).monthName}`;
       document.getElementById('current-week-label').textContent = `${startStr} - ${endStr}`;
+
+      const agendaPicker = document.getElementById('agenda-date-picker');
+      if (agendaPicker) {
+        agendaPicker.value = StorageManager.formatDateISO(this.currentMonday);
+      }
 
       const dayIds = ['th-mon', 'th-tue', 'th-wed', 'th-thu', 'th-fri', 'th-sat', 'th-sun'];
       weekDetails.days.forEach((d, idx) => {

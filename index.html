@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#07090e">
   <meta name="format-detection" content="telephone=no">
 
-  <title>TrackPulse V2 | Next-Gen Habit & Performance Studio</title>
+  <title>TrackPulse V2 | Next-Gen Habit & Agenda Studio</title>
   
   <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,12 +35,12 @@
     <!-- Skiper UI Floating Glass Navigation Bar -->
     <header class="skiper-floating-header">
       <div class="header-brand">
-        <div class="brand-icon animmaster-pulse">
+        <div class="brand-icon-cube animmaster-pulse">
           <i class="fa-solid fa-chart-line"></i>
         </div>
         <div class="brand-text">
           <h1>TrackPulse <span class="v2-badge">V2 Pro</span></h1>
-          <span class="brand-subtitle">Habit & Performance Studio</span>
+          <span class="brand-subtitle">Habit & Agenda Studio</span>
         </div>
       </div>
 
@@ -60,15 +60,18 @@
         </button>
       </nav>
 
-      <!-- Week Controller -->
+      <!-- Interactive Calendar Agenda & Week Selector -->
       <div class="week-selector">
         <button id="prev-week-btn" class="btn btn-icon" title="Previous Week">
           <i class="fa-solid fa-chevron-left"></i>
         </button>
-        <div class="week-display">
-          <i class="fa-regular fa-calendar text-cyan"></i>
+
+        <div class="agenda-picker-wrapper" title="Click to select any day in Agenda">
+          <i class="fa-regular fa-calendar-days text-cyan"></i>
           <span id="current-week-label">Loading week...</span>
+          <input type="date" id="agenda-date-picker" class="agenda-hidden-date-input">
         </div>
+
         <button id="next-week-btn" class="btn btn-icon" title="Next Week">
           <i class="fa-solid fa-chevron-right"></i>
         </button>
@@ -93,6 +96,7 @@
           </button>
         </div>
 
+        <!-- Settings Dropdown with High Z-Index fix -->
         <div class="dropdown-menu-wrapper">
           <button id="settings-menu-btn" class="btn btn-icon btn-secondary" title="Options & Data">
             <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -125,7 +129,7 @@
 
       <!-- AnimMaster & Vengeance Bento KPI Grid -->
       <section class="kpi-grid bento-grid">
-        <!-- Weekly Score Card (AnimMaster Animated Border) -->
+        <!-- Weekly Score Card -->
         <div class="kpi-card glass-panel bento-card animmaster-glow-card highlight-border vengeance-3d-tilt">
           <div class="kpi-header">
             <span class="kpi-title"><i class="fa-solid fa-bullseye text-cyan"></i> Weekly Score</span>
