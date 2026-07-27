@@ -1,9 +1,9 @@
-/* TrackPulse V2 - Master Stylesheet (Agenda & Z-Index Fixed) */
+/* TrackPulse V2 - Master Stylesheet (360° Border Glow & Mobile Badge Layout Fix) */
 
 :root {
   --bg-dark: #07090e;
-  --bg-card: rgba(15, 22, 36, 0.75);
-  --bg-card-hover: rgba(22, 32, 53, 0.85);
+  --bg-card: rgba(15, 22, 36, 0.85);
+  --bg-card-hover: rgba(22, 32, 53, 0.9);
   --bg-modal: #0d1322;
   --bg-sticky-col: #0b101c;
   
@@ -384,7 +384,7 @@ body.dark-theme.v2-theme {
 .dropdown-divider { height: 1px; background: var(--border-color); margin: 0.35rem 0; }
 .text-danger { color: var(--color-danger); }
 
-/* AnimMaster & Vengeance Bento Cards */
+/* Bento Grid */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -394,13 +394,12 @@ body.dark-theme.v2-theme {
 
 .bento-card {
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.35rem;
   position: relative;
-  overflow: hidden;
   transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -415,32 +414,33 @@ body.dark-theme.v2-theme {
   box-shadow: 0 12px 30px -10px rgba(6, 182, 212, 0.25);
 }
 
+/* FIXED TRUE 360-DEGREE ANIMATED BORDER GLOW */
 .animmaster-glow-card {
   position: relative;
+  border-color: rgba(6, 182, 212, 0.4) !important;
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.15), inset 0 0 15px rgba(6, 182, 212, 0.08);
 }
 
-.animmaster-glow-card::before {
+.animmaster-glow-card::after {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(from 0deg, transparent, #06b6d4, #8b5cf6, transparent 60%);
-  animation: animmasterRotate 5s linear infinite;
-  z-index: 0;
-  opacity: 0.4;
+  inset: -1px;
+  border-radius: var(--radius-md);
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.85), rgba(139, 92, 246, 0.85), rgba(245, 158, 11, 0.85), rgba(6, 182, 212, 0.85));
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: borderGlow360 4s linear infinite;
   pointer-events: none;
+  z-index: 2;
 }
 
-.animmaster-glow-card > * {
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes animmasterRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes borderGlow360 {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .kpi-header {
@@ -474,15 +474,28 @@ body.dark-theme.v2-theme {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.badge-pill-live {
-  font-size: 0.7rem;
+/* FIXED LIVE MATRIX BADGE ON MOBILE */
+.section-title h2 {
+  font-size: 1.2rem;
   font-weight: 700;
-  padding: 0.15rem 0.5rem;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge-pill-live {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
   border-radius: 20px;
   background: rgba(6, 182, 212, 0.15);
   color: var(--color-primary);
   border: 1px solid rgba(6, 182, 212, 0.3);
-  margin-left: 0.5rem;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
 }
 
 .kpi-icon-circle {
@@ -570,7 +583,7 @@ body.dark-theme.v2-theme {
   border-radius: 4px;
 }
 
-/* Optimized Progress Bar */
+/* Progress Bar */
 .progress-bar-container {
   width: 100%;
   height: 8px;
@@ -616,12 +629,13 @@ body.dark-theme.v2-theme {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
-.section-title h2 { font-size: 1.2rem; font-weight: 700; color: #ffffff; }
 .section-title p { font-size: 0.82rem; color: var(--text-muted); }
 
-/* Habit Table Grid & Improved Activity Cubes */
+/* Habit Table Grid */
 .matrix-table-container {
   overflow-x: auto;
   padding: 0.5rem;
@@ -668,7 +682,6 @@ body.dark-theme.v2-theme {
 
 .activity-cell { display: flex; align-items: center; gap: 0.65rem; }
 
-/* Improved 3D Activity Icon Cube */
 .activity-icon-badge {
   width: 36px;
   height: 36px;
@@ -1034,4 +1047,5 @@ body.dark-theme.v2-theme {
 @media (max-width: 480px) {
   .bento-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
+  .section-header-actions { flex-direction: column; align-items: flex-start; }
 }
