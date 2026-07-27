@@ -2,22 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Mobile & Notch Native Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
-  <!-- iOS Safari & Android PWA Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="TrackPulse">
-  <meta name="theme-color" content="#0b0f19">
+  <meta name="apple-mobile-web-app-title" content="TrackPulse V2">
+  <meta name="theme-color" content="#07090e">
   <meta name="format-detection" content="telephone=no">
 
-  <title>TrackPulse | Weekly Progress & Habit Tracker</title>
+  <title>TrackPulse V2 | Next-Gen Habit & Performance Studio</title>
   
   <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Chart.js for data visualization -->
@@ -26,22 +24,41 @@
   <!-- App Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="dark-theme">
+<body class="dark-theme v2-theme">
+
+  <!-- AnimMaster Ambient Particle Background Canvas -->
+  <canvas id="ambient-particle-canvas"></canvas>
 
   <!-- App Wrapper -->
   <div class="app-container">
     
-    <!-- Top Navigation Header -->
-    <header class="app-header">
+    <!-- Skiper UI Floating Glass Navigation Bar -->
+    <header class="skiper-floating-header">
       <div class="header-brand">
-        <div class="brand-icon">
+        <div class="brand-icon animmaster-pulse">
           <i class="fa-solid fa-chart-line"></i>
         </div>
         <div class="brand-text">
-          <h1>TrackPulse</h1>
-          <span class="brand-subtitle">Habit & Weekly Studio</span>
+          <h1>TrackPulse <span class="v2-badge">V2 Pro</span></h1>
+          <span class="brand-subtitle">Habit & Performance Studio</span>
         </div>
       </div>
+
+      <!-- Skiper Desktop Navigation Pills -->
+      <nav class="skiper-nav-links desktop-only">
+        <button class="skiper-nav-pill active" data-tab="weekly-view">
+          <i class="fa-solid fa-calendar-week"></i> Matrix
+        </button>
+        <button class="skiper-nav-pill" data-tab="graphs-view">
+          <i class="fa-solid fa-chart-area"></i> Analytics
+        </button>
+        <button class="skiper-nav-pill" data-tab="reflection-view">
+          <i class="fa-solid fa-pen-fancy"></i> Journal
+        </button>
+        <button class="skiper-nav-pill admin-only-tab hidden" data-tab="admin-view" id="desktop-admin-tab">
+          <i class="fa-solid fa-crown text-trading"></i> Admin (RIADH)
+        </button>
+      </nav>
 
       <!-- Week Controller -->
       <div class="week-selector">
@@ -49,7 +66,7 @@
           <i class="fa-solid fa-chevron-left"></i>
         </button>
         <div class="week-display">
-          <i class="fa-regular fa-calendar"></i>
+          <i class="fa-regular fa-calendar text-cyan"></i>
           <span id="current-week-label">Loading week...</span>
         </div>
         <button id="next-week-btn" class="btn btn-icon" title="Next Week">
@@ -58,21 +75,20 @@
         <button id="today-week-btn" class="btn btn-sm btn-outline">Today</button>
       </div>
 
-      <!-- User Account & Desktop Actions -->
+      <!-- User Account & Action Buttons -->
       <div class="header-actions">
-        <!-- User Profile Badge / Login Button -->
-        <button id="user-auth-btn" class="btn btn-secondary">
-          <i class="fa-solid fa-user"></i>
+        <button id="user-auth-btn" class="btn btn-secondary skiper-auth-btn">
+          <i class="fa-solid fa-user-astronaut text-cyan"></i>
           <span id="user-badge-label">Login</span>
         </button>
 
         <div class="desktop-only" style="display: flex; gap: 0.5rem;">
-          <button id="open-add-habit-modal-btn" class="btn btn-primary">
+          <button id="open-add-habit-modal-btn" class="btn btn-primary animmaster-glow-btn">
             <i class="fa-solid fa-plus"></i>
             <span>Add Activity</span>
           </button>
-          <button id="open-log-modal-btn" class="btn btn-accent">
-            <i class="fa-solid fa-pen-to-square"></i>
+          <button id="open-log-modal-btn" class="btn btn-accent vengeance-lift-btn">
+            <i class="fa-solid fa-bolt"></i>
             <span>Quick Log</span>
           </button>
         </div>
@@ -83,7 +99,7 @@
           </button>
           <div id="settings-dropdown" class="dropdown-content hidden">
             <button id="load-demo-btn" class="dropdown-item">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> Load Demo Data
+              <i class="fa-solid fa-wand-magic-sparkles text-amber"></i> Load Demo Data
             </button>
             <button id="export-data-btn" class="dropdown-item">
               <i class="fa-solid fa-file-export"></i> Export JSON
@@ -104,15 +120,15 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Dashboard Content -->
     <main class="dashboard-content">
 
-      <!-- KPI Overview Cards -->
-      <section class="kpi-grid">
-        <!-- Overall Score Card -->
-        <div class="kpi-card glass-panel highlight-border">
+      <!-- AnimMaster & Vengeance Bento KPI Grid -->
+      <section class="kpi-grid bento-grid">
+        <!-- Weekly Score Card (AnimMaster Animated Border) -->
+        <div class="kpi-card glass-panel bento-card animmaster-glow-card highlight-border vengeance-3d-tilt">
           <div class="kpi-header">
-            <span class="kpi-title">Weekly Score</span>
+            <span class="kpi-title"><i class="fa-solid fa-bullseye text-cyan"></i> Weekly Score</span>
             <div class="kpi-badge badge-success" id="kpi-score-badge">On Track 🔥</div>
           </div>
           <div class="kpi-body">
@@ -127,8 +143,8 @@
           </div>
         </div>
 
-        <!-- Sport & Health Card -->
-        <div class="kpi-card glass-panel">
+        <!-- Sport Workout Card -->
+        <div class="kpi-card glass-panel bento-card vengeance-3d-tilt">
           <div class="kpi-header">
             <span class="kpi-title"><i class="fa-solid fa-person-running text-sport"></i> Sport & Fitness</span>
             <div class="kpi-icon-circle sport-glow"><i class="fa-solid fa-dumbbell"></i></div>
@@ -145,7 +161,7 @@
         </div>
 
         <!-- Trading Performance Card -->
-        <div class="kpi-card glass-panel">
+        <div class="kpi-card glass-panel bento-card vengeance-3d-tilt">
           <div class="kpi-header">
             <span class="kpi-title"><i class="fa-solid fa-chart-candlestick text-trading"></i> Trading & P&L</span>
             <div class="kpi-icon-circle trading-glow"><i class="fa-solid fa-arrow-trend-up"></i></div>
@@ -160,9 +176,9 @@
         </div>
 
         <!-- Reading & Books Card -->
-        <div class="kpi-card glass-panel">
+        <div class="kpi-card glass-panel bento-card vengeance-3d-tilt">
           <div class="kpi-header">
-            <span class="kpi-title"><i class="fa-solid fa-book-open text-reading"></i> Reading & Learning</span>
+            <span class="kpi-title"><i class="fa-solid fa-book-open text-reading"></i> Reading & Pace</span>
             <div class="kpi-icon-circle reading-glow"><i class="fa-solid fa-book"></i></div>
           </div>
           <div class="kpi-body">
@@ -177,30 +193,14 @@
         </div>
       </section>
 
-      <!-- Desktop Dashboard View Tabs -->
-      <div class="dashboard-tabs desktop-only">
-        <button class="tab-btn active" data-tab="weekly-view">
-          <i class="fa-solid fa-calendar-week"></i> Weekly Habit Matrix & Overview
-        </button>
-        <button class="tab-btn" data-tab="graphs-view">
-          <i class="fa-solid fa-chart-area"></i> Analytics & Graphs Studio
-        </button>
-        <button class="tab-btn" data-tab="reflection-view">
-          <i class="fa-solid fa-pen-fancy"></i> Weekly Reflection & Notes
-        </button>
-        <button class="tab-btn admin-only-tab hidden" data-tab="admin-view" id="desktop-admin-tab">
-          <i class="fa-solid fa-crown text-trading"></i> Admin Panel (RIADH)
-        </button>
-      </div>
-
       <!-- Tab Content 1: Weekly Matrix Overview -->
       <section id="weekly-view" class="tab-content active">
         <div class="section-header-actions">
           <div class="section-title">
-            <h2>Weekly Habit Matrix</h2>
-            <p>Track your daily completion and check your progress against your weekly goals.</p>
+            <h2>Weekly Habit Matrix <span class="badge-pill-live">Live Matrix</span></h2>
+            <p>Track your daily completion and check your progress against weekly goals.</p>
           </div>
-          <button id="matrix-add-btn" class="btn btn-outline btn-sm">
+          <button id="matrix-add-btn" class="btn btn-outline btn-sm animmaster-glow-btn">
             <i class="fa-solid fa-plus"></i> New Activity Goal
           </button>
         </div>
@@ -227,7 +227,7 @@
             </tbody>
           </table>
           <div id="empty-habits-state" class="empty-state hidden">
-            <i class="fa-solid fa-list-check empty-icon"></i>
+            <i class="fa-solid fa-list-check empty-icon text-cyan"></i>
             <h3>No activities tracked yet</h3>
             <p>Click "Add Activity" to set up your sport, trading, reading, or health goals!</p>
             <div class="empty-actions">
@@ -245,7 +245,7 @@
       <!-- Tab Content 2: Dynamic Graphs Studio -->
       <section id="graphs-view" class="tab-content">
         <div class="graphs-grid">
-          <div class="chart-card glass-panel col-span-2">
+          <div class="chart-card glass-panel col-span-2 vengeance-3d-tilt">
             <div class="chart-header">
               <div>
                 <h3>Daily Activity Distribution</h3>
@@ -264,7 +264,7 @@
             </div>
           </div>
 
-          <div class="chart-card glass-panel">
+          <div class="chart-card glass-panel vengeance-3d-tilt">
             <div class="chart-header">
               <div>
                 <h3>Category Balance</h3>
@@ -276,7 +276,7 @@
             </div>
           </div>
 
-          <div class="chart-card glass-panel col-span-2">
+          <div class="chart-card glass-panel col-span-2 vengeance-3d-tilt">
             <div class="chart-header">
               <div>
                 <h3><i class="fa-solid fa-chart-candlestick text-trading"></i> Trading Daily P&L ($)</h3>
@@ -292,7 +292,7 @@
             </div>
           </div>
 
-          <div class="chart-card glass-panel">
+          <div class="chart-card glass-panel vengeance-3d-tilt">
             <div class="chart-header">
               <div>
                 <h3><i class="fa-solid fa-book-open text-reading"></i> Daily Pages Read</h3>
@@ -308,13 +308,13 @@
 
       <!-- Tab Content 3: Weekly Reflection & Journal -->
       <section id="reflection-view" class="tab-content">
-        <div class="reflection-container glass-panel">
+        <div class="reflection-container glass-panel vengeance-3d-tilt">
           <div class="reflection-header">
             <div>
               <h2>Weekly Journal & Performance Reflection</h2>
               <p>Document what worked well, trading lessons, sports milestones, and thoughts for next week.</p>
             </div>
-            <button id="save-reflection-btn" class="btn btn-primary">
+            <button id="save-reflection-btn" class="btn btn-primary animmaster-glow-btn">
               <i class="fa-solid fa-floppy-disk"></i> Save Notes
             </button>
           </div>

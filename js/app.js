@@ -1,5 +1,6 @@
 /**
- * TrackPulse Main Application Logic - Multi-User & Secure Auth Edition
+ * TrackPulse V2 Main Application Logic
+ * Powered by AnimMasterLib Particles, Skiper UI Navigation, & Vengeance 3D Tilt
  */
 
 class TrackPulseApp {
@@ -19,14 +20,77 @@ class TrackPulseApp {
   init() {
     StorageManager.initUserSession();
 
-    // Ensure no automatic admin login on initial site load
     const habits = StorageManager.getHabits();
     if (!habits || habits.length === 0) {
       StorageManager.seedDemoData(this.currentMonday);
     }
 
+    this.initParticles();
+    this.init3DTilt();
     this.bindEvents();
     this.render();
+  }
+
+  // AnimMaster Background Canvas Particle Engine
+  initParticles() {
+    const canvas = document.getElementById('ambient-particle-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = Array.from({ length: 35 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: Math.random() * 2 + 1,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: (Math.random() - 0.5) * 0.4,
+      color: Math.random() > 0.5 ? 'rgba(6, 182, 212, 0.4)' : 'rgba(139, 92, 246, 0.4)'
+    }));
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > width) p.dx *= -1;
+        if (p.y < 0 || p.y > height) p.dy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
+        ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  // Vengeance 3D Displacement Mouse Hover Effect
+  init3DTilt() {
+    document.querySelectorAll('.vengeance-3d-tilt').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const rotateX = (-y / rect.height) * 12;
+        const rotateY = (x / rect.width) * 12;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+      });
+    });
   }
 
   bindEvents() {
@@ -34,15 +98,14 @@ class TrackPulseApp {
     document.getElementById('next-week-btn').addEventListener('click', () => this.changeWeek(7));
     document.getElementById('today-week-btn').addEventListener('click', () => this.goToTodayWeek());
 
-    // Desktop & Mobile Tab Navigation
-    document.querySelectorAll('.tab-btn, .mobile-bottom-nav .nav-item[data-tab]').forEach(btn => {
+    // Skiper & Mobile Tab Navigation Sync
+    document.querySelectorAll('.skiper-nav-pill, .mobile-bottom-nav .nav-item[data-tab]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const targetTab = e.currentTarget.getAttribute('data-tab');
         if (targetTab) this.switchTab(targetTab);
       });
     });
 
-    // Mobile FAB Buttons
     const fabLogBtn = document.getElementById('mobile-fab-log-btn');
     if (fabLogBtn) fabLogBtn.addEventListener('click', () => this.openLogModal());
 
@@ -64,7 +127,6 @@ class TrackPulseApp {
       });
     }
 
-    // Refresh Admin Stats
     const refreshAdminBtn = document.getElementById('refresh-admin-btn');
     if (refreshAdminBtn) {
       refreshAdminBtn.addEventListener('click', () => this.renderAdminPanel());
@@ -86,7 +148,6 @@ class TrackPulseApp {
 
     document.getElementById('log-habit-select').addEventListener('change', (e) => this.updateLogValueInputLabel(e.target.value));
 
-    // Options Menu
     const menuBtn = document.getElementById('settings-menu-btn');
     const dropdown = document.getElementById('settings-dropdown');
     if (menuBtn) {
@@ -162,7 +223,7 @@ class TrackPulseApp {
     if (this.activeTab === tabId) return;
     this.activeTab = tabId;
 
-    document.querySelectorAll('.tab-btn, .mobile-bottom-nav .nav-item[data-tab]').forEach(btn => {
+    document.querySelectorAll('.skiper-nav-pill, .mobile-bottom-nav .nav-item[data-tab]').forEach(btn => {
       const isTarget = btn.getAttribute('data-tab') === tabId;
       btn.classList.toggle('active', isTarget);
     });
@@ -178,7 +239,6 @@ class TrackPulseApp {
     }
   }
 
-  // Auth Handlers
   openAuthModal() {
     document.getElementById('auth-modal').classList.remove('hidden');
   }
@@ -245,7 +305,6 @@ class TrackPulseApp {
       if (logoutBtn) logoutBtn.classList.add('hidden');
       adminTabs.forEach(el => el.classList.add('hidden'));
 
-      // If viewing admin tab while logged out, switch to main tab
       if (this.activeTab === 'admin-view') {
         this.switchTab('weekly-view');
       }
